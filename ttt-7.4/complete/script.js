@@ -154,7 +154,7 @@ const assetsPath = "https://niksfiles.s3.eu-west-2.amazonaws.com/";
 
 THREE.Pathfinding = threePathfinding.Pathfinding;
 
-var scene, camera, renderer, navmesh, pathfinder, clock, mouse, player, ZONE, waypoints, waypointIndex, listener, sound;
+var scene, camera, renderer, navmesh, pathfinder, clock, mouse, player, ZONE, waypoints, waypointIndex, listener, sound, mesh;
 
 init();
 
@@ -218,7 +218,7 @@ function getNextWaypoint(){
 function createPlayer(){
   const geometry = new THREE.SphereBufferGeometry(1, 8, 8);
   const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-  const mesh = new THREE.Mesh( geometry, material );
+  mesh = new THREE.Mesh( geometry, material );
   mesh.position.z = 25;
   
   const options = {
@@ -228,6 +228,12 @@ function createPlayer(){
     name: 'player'
   };
   
+  player = new Player( options );
+  
+  update();
+}
+
+function playSound(){
   const listener = new THREE.AudioListener();
   camera.add( listener );
   
@@ -255,10 +261,6 @@ function createPlayer(){
   footsteps.setDirectionalCone( 180, 230, 1.0 );
   const helper = new THREE.PositionalAudioHelper( footsteps );
   footsteps.add(helper);
-  
-  player = new Player( options );
-  
-  update();
 }
 
 function onWindowResize() {

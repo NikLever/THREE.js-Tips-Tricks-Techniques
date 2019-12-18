@@ -41,6 +41,15 @@ function init() {
   
   simplex = new SimplexNoise(4);
   
+  //Add analyser here
+
+  update();
+  
+  window.addEventListener("resize", onWindowResize, false);
+  window.addEventListener('mousedown', onMouseDown, false);
+}
+
+function playSound(){
   listener = new THREE.AudioListener();
   camera.add( listener );
   
@@ -51,14 +60,7 @@ function init() {
   loader.load( 'against-the-odds.mp3', buffer => {
     sound.setBuffer( buffer );
     sound.play();
-  })
-  
-  //Add analyser here
-
-  update();
-  
-  window.addEventListener("resize", onWindowResize, false);
-  window.addEventListener('mousedown', onMouseDown, false);
+  });
 }
 
 function onMouseDown(){

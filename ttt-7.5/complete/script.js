@@ -40,7 +40,14 @@ function init() {
   scene.add(ball);
   
   simplex = new SimplexNoise(4);
+
+  update();
   
+  window.addEventListener("resize", onWindowResize, false);
+  window.addEventListener('mousedown', onMouseDown, false);
+}
+
+function playSound(){
   listener = new THREE.AudioListener();
   camera.add( listener );
   
@@ -54,11 +61,6 @@ function init() {
   })
   
   analyser = new THREE.AudioAnalyser( sound, 128 );
-
-  update();
-  
-  window.addEventListener("resize", onWindowResize, false);
-  window.addEventListener('mousedown', onMouseDown, false);
 }
 
 function onMouseDown(){
@@ -80,21 +82,23 @@ function onWindowResize() {
 function update() {
   const time = clock.getElapsedTime();
   
-  const divisor = 32;
-  const data = analyser.getFrequencyData();
-  const avgFr = analyser.getAverageFrequency();
-  
-  // slice the array into two halves
-  const lowerHalfArray = data.slice(0, (data.length/2) - 1);
-  const upperHalfArray = 
-  data.slice((data.length/2) - 1, data.length - 1);
-  
-  const lowerAvgFr = avg(lowerHalfArray)/divisor;
-  const upperAvgFr = avg(upperHalfArray)/divisor;
-  
-  updateGround(planeGeometry, modulate(avgFr, 0, divisor, 0.5, 3), time);
-  
-  updateBall(ballGeometry, lowerAvgFr, upperAvgFr, time );
+  if ( analyser ){
+    const divisor = 32;
+    const data = analyser.getFrequencyData();
+    const avgFr = analyser.getAverageFrequency();
+
+    // slice the array into two halves
+    const lowerHalfArray = data.slice(0, (data.length/2) - 1);
+    const upperHalfArray = 
+    data.slice((data.length/2) - 1, data.length - 1);
+
+    const lowerAvgFr = avg(lowerHalfArray)/divisor;
+    const upperAvgFr = avg(upperHalfArray)/divisor;
+
+    updateGround(planeGeometry, modulate(avgFr, 0, divisor, 0.5, 3), time);
+
+    updateBall(ballGeometry, lowerAvgFr, upperAvgFr, time );
+  }
   
   ball.rotateY( 0.01 );
   
